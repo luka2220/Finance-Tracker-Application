@@ -4,56 +4,9 @@ const router = express.Router();
 
 const UserModel = require('../models/user');
 
-// Get request for data
-router.get('/data:email', (req, res) => {
+createUser = (res, newUser) => {
 
-    const newEmail = req.params;
-
-    UserModel.find({})
-        .then((data) => {
-
-            console.log(`New user email: ${newEmail['email']}\nType: ${typeof(data)}`);
-
-            for (const [key, value] of Object.entries(data)) {
-
-                if (value['email'] === newEmail['email']) {
-
-                    console.log(`User email already exists in database: ${newEmail['email']}`);
-
-                    res.json({
-                        'exists': 'true'
-                    });
-
-                    break;
-                } else {
-
-                    console.log(`User email added database: ${newEmail['email']}`);
-
-                    res.json({
-                        'exists': 'false'
-                    });
-
-                    break;
-                }
-            }
-        })
-        .catch((error) => {
-
-            if (error) {
-                res.send(`Error ${error}, ${newEmail}`);
-                console.log("Error: " + error);
-            }
-        })
-});
-
-// Saving user data sent from client to our mongoDB cluster
-router.post('/save', (req, res) => {
-
-    const data = req.body;
-
-    const NewUser = new UserModel(data);
-
-    NewUser.save((error) => {
+    newUser.save((error) => {
         if (error) {
             res.status(500).json({
                 msg: 'Error, Data not saved to cluster'
@@ -65,6 +18,64 @@ router.post('/save', (req, res) => {
             msg: 'User data saved to cluster.'
         });
     })
+};
+
+userExists = (res, newEmail) => {
+
+    let emailToCheck = newEmail['email'];
+
+    UserModel.find({ email: emailToCheck })
+        .then((data) => {
+
+            let amount = Object.keys(data).length;
+
+            if (amount) {
+
+                res.send(true);
+
+            } else {
+                res.send(false);
+            }
+        })
+        .catch((error) => {
+
+            if (error) {
+                res.send(error);
+            }
+        })
+};
+
+
+// Get request route for testing
+router.get('/data', (req, res) => {
+
+    UserModel.find({})
+        .then((data) => {
+
+            res.send(data);
+        })
+        .catch((error) => {
+
+            res.send(error);
+        })
+});
+
+// Get request to check if user exists
+router.get('/data:email', (req, res) => {
+
+    const newEmail = req.params;
+
+    userExists(res, newEmail);
+});
+
+// Saving user data sent from client to our mongoDB cluster
+router.post('/save', (req, res) => {
+
+    const data = req.body;
+
+    const newUser = new UserModel(data);
+
+    createUser(res, newUser);
 });
 
 module.exports = router;

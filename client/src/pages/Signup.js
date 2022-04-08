@@ -15,9 +15,9 @@ class Signup extends React.Component {
     * Method for making a get request to /signup/save/data:email
     * to check if the current users email does not exist in the database
     */
-    checkEmailInDB = (email) => {
+    checkEmailInDB = () => {
 
-        let url = `/signup/data${email}`;
+        let url = `/signup/data${this.state.email}`;
 
         axios(url)
             .then((response) => {
@@ -27,38 +27,48 @@ class Signup extends React.Component {
                 this.setState({
                     emailExists: data
                 })
-
             })
             .catch(() => {
-                alert('Client failed to request data from server');
+                alert('Client failed to request email data from server');
             })
     };
 
     // function for sending user data top server
     submit = (event) => {
 
+        // checking if current email already exists in the database
+        this.checkEmailInDB();
+
         // prevents browser from refreshing
         event.preventDefault();
 
         // data to send
         const payload = {
-            name: this.state.name,
             email: this.state.email,
-            password: this.state.password
+            password: this.state.password,
+            name: this.state.name
         };
 
-        axios({
-            url: '/signup/save',
-            method: 'POST',
-            data: payload
-        })
-            .then(() => {
-                console.log('Data sent to server');
-                this.resetUserInput();
+        // will send data to server if email does not exist currently
+        if (!this.state.emailExists) {
+
+            axios({
+                url: '/signup/save',
+                method: 'POST',
+                data: payload
             })
-            .catch(() => {
-                console.log('Error, data not sent to server (Client)');
-            })
+                .then(() => {
+                    console.log('Data sent to server');
+                    this.resetUserInput();
+                })
+                .catch(() => {
+                    console.log('Error, data not sent to server (Client)');
+                })
+
+            return;
+        }
+
+        alert('User with email already exists');
     };
 
     handleChange = ({ target }) => {
