@@ -60,6 +60,7 @@ class Signup extends React.Component {
                 .then(() => {
                     console.log('Data sent to server');
                     this.resetUserInput();
+                    alert('Account created');
                 })
                 .catch(() => {
                     console.log('Error, data not sent to server (Client)');
@@ -89,7 +90,11 @@ class Signup extends React.Component {
             <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
                 <form onSubmit={this.submit}>
                     <div className={"signup-input"}>
-                        <br /><br /><br /><br />
+                        <br/><br/>
+                        <h2>User Signup</h2>
+                    </div>
+                    <div className={"signup-input"}>
+                        <br/>
                         <p>Name</p>
                         <input
                             type="text"
@@ -118,7 +123,7 @@ class Signup extends React.Component {
                     </div>
 
                     <br />
-                    <button>Submit</button>
+                    <button>Signup</button>
                 </form>
             </div>
         );

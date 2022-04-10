@@ -5,8 +5,9 @@ const mongoose = require('mongoose');
 // Database url connection
 const { mongoUrl } = require('./config');
 
-// All Routes
+// Server routes
 const signupRoute = require('./routes/signup');
+const loginRoute = require('./routes/login');
 
 // initializing application
 const app = express();
@@ -29,7 +30,9 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(morgan('tiny')); // HTTP logger
 
+// routes
 app.use('/signup', signupRoute);
+app.use('/login', loginRoute);
 
 // start the server
 app.listen(PORT, async () => {
