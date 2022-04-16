@@ -2,10 +2,10 @@ const express = require('express');
 
 const router = express.Router();
 
-const UserModel = require('../models/user');
+const UserModel = require('../models/User');
 
 
-verifyUser = (res, email) => {
+verifyUser = (res, email, password) => {
 
 }
 
@@ -17,6 +17,7 @@ router.get('/verify:email', (req, res) => {
 });
 
 router.get('/verify', (req, res) => {
+
     res.send('verify route');
 });
 

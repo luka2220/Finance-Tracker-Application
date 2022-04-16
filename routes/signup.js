@@ -2,7 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 
-const UserModel = require('../models/user');
+const UserModel = require('../models/User');
 
 createUser = (res, newUser) => {
 
@@ -34,6 +34,7 @@ userExists = (res, newEmail) => {
                 res.send(true);
 
             } else {
+
                 res.send(false);
             }
         })
@@ -44,7 +45,6 @@ userExists = (res, newEmail) => {
             }
         })
 };
-
 
 // Get request route for testing
 router.get('/data', (req, res) => {

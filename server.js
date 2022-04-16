@@ -1,13 +1,15 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 // Database url connection
 const { mongoUrl } = require('./config');
 
 // Server routes
-const signupRoute = require('./routes/signup');
-const loginRoute = require('./routes/login');
+const authRoutes = require('./routes/auth');
+const { db } = require('./models/User');
 
 // initializing application
 const app = express();
@@ -24,15 +26,13 @@ mongoose.connection.on('connected', () => {
 });
 
 // middlewares
-app.use(express.json()); // Data parsing
-
+app.use(bodyParser.json()); // Data parsing
 app.use(express.urlencoded({ extended: false }));
-
 app.use(morgan('tiny')); // HTTP logger
+app.use(cors());
 
-// routes
-app.use('/signup', signupRoute);
-app.use('/login', loginRoute);
+// routes middlewares
+app.use('/api', authRoutes);
 
 // start the server
 app.listen(PORT, async () => {
